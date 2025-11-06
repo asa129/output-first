@@ -1,25 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { Mic } from "lucide-react";
+import { CircleStop, Mic, MicOff } from "lucide-react";
 
 export function RecordButton() {
   const streamObject = useRef<MediaStream>(null);
+  const chunks = useRef<Blob[]>([]);
   const isCertification = useRef<boolean>(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder>();
+  const mediaRecorder = useRef<MediaRecorder>(null);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const onCertification = async () => {
-    // await navigator.mediaDevices.getUserMedia({ audio: true }).then(
-    //   (stream) => {
-    //     isCertification.current = true;
-    //     streamObject.current = stream;
-    //     console.log("getUserMedia is supported");
-    //   },
-    //   () => {
-    //     console.log("getUserMedia is not supported");
-    //   }
-    // );
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     if (stream.active) {
       streamObject.current = stream;
@@ -35,28 +26,64 @@ export function RecordButton() {
       if (!certification) {
         return;
       }
-      // 承認チェックのみ行う
-      return;
     }
+    await setMediaRecorder();
     // 録音開始
-    const rec: MediaRecorder = new MediaRecorder(streamObject.current!);
-    setMediaRecorder(rec);
-    mediaRecorder?.start();
+    mediaRecorder.current?.start();
     console.log("録音開始");
     setIsRecording(true);
   };
-  const onClickStop = () => {
-    mediaRecorder?.stop();
+
+  const setMediaRecorder = async () => {
+    // MediaRecorderを設定
+    mediaRecorder.current = new MediaRecorder(streamObject.current!);
+    mediaRecorder.current.ondataavailable = (e: BlobEvent) => {
+      console.log("🔴 ondataavailable fired! Time:", Date.now());
+      chunks.current = [...chunks.current, e.data];
+    };
+
+    // 停止時に実行する(mediaRecorder.current?.stop()が呼ばれたときに実行)
+    mediaRecorder.current.onstop = async () => {
+      setIsRecording(false);
+      await onDataTranscription();
+      chunks.current = [];
+      mediaRecorder.current = null;
+    };
+  };
+
+  const onClickStop = async () => {
+    mediaRecorder.current?.stop();
     console.log("録音停止");
     setIsRecording(false);
   };
+
+  const onDataTranscription = async () => {
+    // Blobを作成
+    const blob = new Blob(chunks.current, {
+      type: mediaRecorder.current?.mimeType,
+    });
+    console.log(blob);
+    // formDataを作成
+    const formData = new FormData();
+    formData.append("audio", blob!, "recording.webm");
+    const response = await fetch("http://localhost:3000/api/transcri", {
+      method: "POST",
+      body: formData,
+    });
+    const transcription = await response.text();
+    console.log(transcription);
+  };
   return (
-    <Button
-      variant="outline"
-      size="icon"
-      onClick={isRecording ? onClickStop : onClickRecord}
-    >
-      <Mic />
-    </Button>
+    <>
+      {isRecording ? (
+        <Button variant="outline" size="icon" onClick={onClickStop}>
+          <CircleStop />
+        </Button>
+      ) : (
+        <Button variant="outline" size="icon" onClick={onClickRecord}>
+          <Mic />
+        </Button>
+      )}
+    </>
   );
 }
