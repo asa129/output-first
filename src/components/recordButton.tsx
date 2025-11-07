@@ -1,10 +1,14 @@
 "use client";
 
-import { use, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { CircleStop, Mic, MicOff } from "lucide-react";
+import { CircleStop, Mic } from "lucide-react";
 
-export function RecordButton() {
+export function RecordButton({
+  setMarkdown,
+}: {
+  setMarkdown: (markdown: string) => void;
+}) {
   const streamObject = useRef<MediaStream>(null);
   const chunks = useRef<Blob[]>([]);
   const isCertification = useRef<boolean>(false);
@@ -31,6 +35,7 @@ export function RecordButton() {
     // 録音開始
     mediaRecorder.current?.start();
     console.log("録音開始");
+    setMarkdown("recording...");
     setIsRecording(true);
   };
 
@@ -62,7 +67,6 @@ export function RecordButton() {
     const blob = new Blob(chunks.current, {
       type: mediaRecorder.current?.mimeType,
     });
-    console.log(blob);
     // formDataを作成
     const formData = new FormData();
     formData.append("audio", blob!, "recording.webm");
@@ -71,14 +75,16 @@ export function RecordButton() {
       body: formData,
     });
     const transcription = await response.text();
-    console.log(transcription);
+    setMarkdown(transcription);
   };
   return (
     <>
       {isRecording ? (
-        <Button variant="outline" size="icon" onClick={onClickStop}>
-          <CircleStop />
-        </Button>
+        <>
+          <Button variant="outline" size="icon" onClick={onClickStop}>
+            <CircleStop />
+          </Button>
+        </>
       ) : (
         <Button variant="outline" size="icon" onClick={onClickRecord}>
           <Mic />

@@ -6,9 +6,12 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { RecordButton } from "../recordButton";
+import FakeRecordingWave from "../fakeRecordingWave";
 
 export function TextareaWithText() {
   const [markdown, setMarkdown] = useState<string>("");
+  const isRecording: string = "recording...";
   return (
     <div className="grid w-full gap-3">
       <Label htmlFor="message-2">Your Message</Label>
@@ -18,14 +21,27 @@ export function TextareaWithText() {
           <TabsTrigger value="password">Password</TabsTrigger>
         </TabsList>
         <TabsContent value="account">
-          <Textarea
-            placeholder="Type your message here."
-            id="message-2"
-            onChange={(e) => {
-              setMarkdown(e.target.value);
-            }}
-            value={markdown}
-          />
+          <div className="relative">
+            <Textarea
+              placeholder={
+                markdown === isRecording ? "" : "Type your message here."
+              }
+              id="message-2"
+              onChange={(e) => {
+                setMarkdown(e.target.value);
+              }}
+              value={markdown === isRecording ? "" : markdown}
+              className="pr-12"
+            />
+            {markdown === isRecording && (
+              <div className="absolute bottom-2 left-2">
+                <FakeRecordingWave />
+              </div>
+            )}
+            <div className="absolute bottom-2 right-2">
+              <RecordButton setMarkdown={setMarkdown} />
+            </div>
+          </div>
           <p className="text-muted-foreground text-sm">
             Your message will be copied to the support team.
           </p>

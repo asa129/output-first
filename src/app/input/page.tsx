@@ -13,7 +13,6 @@ export default async function page({
       <TextareaWithText />
       <p>タイトル:{params.title}</p>
       <p>URL:{params.url}</p>
-      <RecordButton />
     </div>
   );
 }
