@@ -81,12 +81,22 @@ export function RecordButton({
     <>
       {isRecording ? (
         <>
-          <Button variant="outline" size="icon" onClick={onClickStop}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onClickStop}
+            className="rounded-full"
+          >
             <CircleStop />
           </Button>
         </>
       ) : (
-        <Button variant="outline" size="icon" onClick={onClickRecord}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={onClickRecord}
+          className="rounded-full"
+        >
           <Mic />
         </Button>
       )}

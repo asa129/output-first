@@ -1,6 +1,5 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,19 +7,20 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { RecordButton } from "../recordButton";
 import FakeRecordingWave from "../fakeRecordingWave";
+import { Card } from "@/components/ui/card";
 
 export function TextareaWithText() {
   const [markdown, setMarkdown] = useState<string>("");
   const isRecording: string = "recording...";
+
   return (
     <div className="grid w-full gap-3">
-      <Label htmlFor="message-2">Your Message</Label>
-      <Tabs defaultValue="account" className="w-[400px]">
+      <Tabs defaultValue="edit" className="w-full">
         <TabsList>
-          <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="password">Password</TabsTrigger>
+          <TabsTrigger value="edit">Edit</TabsTrigger>
+          <TabsTrigger value="preview">Preview</TabsTrigger>
         </TabsList>
-        <TabsContent value="account">
+        <TabsContent value="edit">
           <div className="relative">
             <Textarea
               placeholder={
@@ -31,25 +31,25 @@ export function TextareaWithText() {
                 setMarkdown(e.target.value);
               }}
               value={markdown === isRecording ? "" : markdown}
-              className="pr-12"
+              className="pr-12 h-[calc(50vh-150px)]"
+              name="message-2"
             />
             {markdown === isRecording && (
               <div className="absolute bottom-2 left-2">
                 <FakeRecordingWave />
               </div>
             )}
-            <div className="absolute bottom-2 right-2">
+            <div className="absolute bottom-2 right-5">
               <RecordButton setMarkdown={setMarkdown} />
             </div>
           </div>
-          <p className="text-muted-foreground text-sm">
-            Your message will be copied to the support team.
-          </p>
         </TabsContent>
-        <TabsContent value="password">
-          <div className="prose">
-            <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
-          </div>
+        <TabsContent value="preview">
+          <Card>
+            <div className="prose">
+              <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
+            </div>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
