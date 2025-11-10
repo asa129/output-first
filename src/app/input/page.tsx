@@ -1,6 +1,8 @@
 import { TextareaWithText } from "@/components/ui/textareaWithText";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function page({
   searchParams,
@@ -10,7 +12,11 @@ export default async function page({
   const params = await searchParams;
   async function submit(formData: FormData) {
     "use server";
-    console.log(formData.get("message-2"));
+    const markdown = formData.get("message-2") as string;
+    const cookie = await cookies();
+    cookie.set("markdown", markdown);
+    redirect("/input");
+    // console.log(cookie.get("markdown"));
   }
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -32,16 +38,13 @@ export default async function page({
 
           {/* Learning Source */}
           <div className="bg-slate-200 rounded-lg border-l-4 border-slate-400 p-4">
-            {/* <p className="text-sm text-slate-600 mb-1">
-              タイトル:{params.title}
-            </p>
-            <p>URL:{params.url}</p> */}
             <p className="text-sm text-slate-600 mb-1">Learning Source</p>
             <a
-              href="#"
+              href={`${params.url}`}
               className="text-lg font-semibold text-slate-900 flex items-center gap-2 hover:text-slate-700"
+              target="_blank"
             >
-              Advanced Calculus - Chapter 3
+              {params.title}
               <ExternalLink className="size-4" />
             </a>
           </div>
