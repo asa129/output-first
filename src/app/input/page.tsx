@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CheckCircle2Icon } from "lucide-react";
 
 export default async function page({
   searchParams,
@@ -13,10 +15,15 @@ export default async function page({
   async function submit(formData: FormData) {
     "use server";
     const markdown = formData.get("message-2") as string;
+    const record = {
+      title: params.title,
+      url: params.url,
+      markdown: markdown,
+      timestamp: new Date().toISOString(),
+    };
     const cookie = await cookies();
-    cookie.set("markdown", markdown);
-    redirect("/input");
-    // console.log(cookie.get("markdown"));
+    cookie.set("record", JSON.stringify(record));
+    redirect("/input?success=true");
   }
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -36,6 +43,15 @@ export default async function page({
             What did you learn today?
           </h2>
 
+          {params.success && (
+            <Alert>
+              <CheckCircle2Icon />
+              <AlertTitle>Success! Your outputs have been saved</AlertTitle>
+              <AlertDescription>
+                This is an alert with icon, title and description.
+              </AlertDescription>
+            </Alert>
+          )}
           {/* Learning Source */}
           <div className="bg-slate-200 rounded-lg border-l-4 border-slate-400 p-4">
             <p className="text-sm text-slate-600 mb-1">Learning Source</p>
