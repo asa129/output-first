@@ -27,14 +27,6 @@ export default async function page({
   }
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Header */}
-      <header className="px-6 py-4">
-        <div className="flex items-center gap-2">
-          {/* Logo */}
-          <h1 className="text-xl font-semibold text-slate-900">Recall Hub</h1>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center px-6 py-12">
         <div className="w-full max-w-2xl space-y-8">
@@ -74,12 +66,6 @@ export default async function page({
           </form>
         </div>
       </main>
-      {/* Footer */}
-      <footer className="px-6 py-8 text-center">
-        <p className="text-sm text-slate-500">
-          © 2025 Recall Hub. A tool for better learning.
-        </p>
-      </footer>
     </div>
   );
 }
