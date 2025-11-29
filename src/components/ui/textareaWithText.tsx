@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import { RecordButton } from "../recordButton";
 import FakeRecordingWave from "../fakeRecordingWave";
 import { Card } from "@/components/ui/card";
+import PreviewCard from "./previewCard";
 
 export function TextareaWithText() {
   const [markdown, setMarkdown] = useState<string>("");
@@ -45,11 +46,7 @@ export function TextareaWithText() {
           </div>
         </TabsContent>
         <TabsContent value="preview">
-          <Card>
-            <div className="prose">
-              <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
-            </div>
-          </Card>
+          <PreviewCard markdown={markdown} />
         </TabsContent>
       </Tabs>
     </div>

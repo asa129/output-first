@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +34,15 @@ export default function RootLayout({
           <div className="flex items-center gap-2">
             {/* Logo */}
             <h1 className="text-xl font-semibold text-slate-900">Recall Hub</h1>
+            {/* Navigation */}
+            <div className="flex justify-end gap-2 ml-auto">
+              <Button variant="ghost">
+                <Link href="/input">Input</Link>
+              </Button>
+              <Button variant="ghost">
+                <Link href="/history">History</Link>
+              </Button>
+            </div>
           </div>
         </header>
         {/* Main Content */}
