@@ -27,7 +27,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* Header */}
+        <header className="px-6 py-4 bg-slate-50">
+          <div className="flex items-center gap-2">
+            {/* Logo */}
+            <h1 className="text-xl font-semibold text-slate-900">Recall Hub</h1>
+          </div>
+        </header>
+        {/* Main Content */}
         {children}
+        {/* Footer */}
+        <footer className="px-6 py-8 text-center bg-slate-50">
+          <p className="text-sm text-slate-500">
+            © 2025 Recall Hub. A tool for better learning.
+          </p>
+        </footer>
       </body>
     </html>
   );
